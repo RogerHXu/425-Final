@@ -18,9 +18,9 @@
  
 void PWM_Clock_Init(void)
 {
-  SYSCTL-> RCC |= 0x00100000;
+  SYSCTL-> RCC |=  0x00100000;
+	SYSCTL-> RCC &= ~0x000E0000;
 	
-	
-	SYSCTL - > RCC &= ~ 0x00060000;
+	SYSCTL-> RCC &= ~0x00060000;
 	
 }
