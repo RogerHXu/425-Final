@@ -25,15 +25,15 @@
 
 #include "PWM0_0.h" 
 #include "Timer_0A_Interrupt.h"
-#include "PMOD_BTN_Interrupt.h"
+#include "IR_Tracking_Sensor_Interrupt.h"
 
 void Timer_0A_Periodic_Task (void);
 
-void PMOD_BTN_Handler (uint8_t pmod_btn_status);
+extern void IR_Sensor_Handler (uint8_t ir_sensor_status);
 
 static uint32_t Timer_0A_ms_elapsed= 0;
 
-static uint16_t RGB_LED_duty_cycle = 0;
+//static uint16_t RGB_LED_duty_cycle = 0;
 
 static uint8_t increment_duty_cycle = 1;
 
@@ -51,10 +51,22 @@ int main(void)
 	// Period_Constant = 62500    Duty Cycle = (62500 * 5%)= 3125 
 	PWM0_1_Init(62500,3125);
 	
+		// Period_Constant = 62500    Duty Cycle = (62500 * 5%)= 3125 
+	PWM0_0_Init(62500,3125);
+	
+	
+	IR_Sensor_Interrupt_Init(&IR_Sensor_Handler);
+	
+	//Timer_0A_Interrupt_Init (&Timer_0A_Periodic_Task);
+	
 	while(1)
 	{						
-		//TT motor requires min 0.5V Equivalent PWM Voltage  to turn on
 		
+		
+		
+		/*
+		
+		//TT motor requires min 0.5V Equivalent PWM Voltage  to turn on
 		
 		//20% duty cycle
 PWM0_1_Update_Duty_Cycle (12500);
@@ -69,47 +81,77 @@ PWM0_1_Update_Duty_Cycle (25000);
 PWM0_1_Update_Duty_Cycle (31250);
 		SysTick_Delay1ms (2000);
 		
-		
 		//75% duty cycle
 PWM0_1_Update_Duty_Cycle (46875);
 		SysTick_Delay1ms (2000);
 		
-		
 	//95% duty cycle
 PWM0_1_Update_Duty_Cycle (59375);
 		SysTick_Delay1ms (2000);
+		
+		*/
+		
 	}
 }
 
-/*// WILL NOT USE FOR DEV
 
-void PMOD_BTN_Handler (uint8_t pmod_btn_status)
-{
-  switch (pmod_btn_status)
-    { //BTN0 (PA2)
-	    case 0x04:
-	    { //3% -> 600us
+
+// will decide where to shift the robot based off of IR input
+void IR_Sensor_Handler (uint8_t ir_sensor_status)
+{   //62,500 = 100% duty
+  switch (ir_sensor_status)
+    { 
+			
+			//NO Reading Black STOP!!!!
+	    case 0x7C:
+	    { 
+	     PWM0_0_Update_Duty_Cycle (0);
+		   break;
+	    }
+			//IR1 (PA2) increase right side by % 
+	    case 0x78:
+	    { 
 	     PWM0_0_Update_Duty_Cycle (1875);
 		   break;
 	    }
-	
-	    //BTN1 (PA3)
-	    case 0x08:
-	    {
-	     PWM0_0_Update_Duty_Cycle (7187);
+			
+			//IR1 (PA2) + IR2 (PA3) seeing black 
+			// increase right side by % 
+	    case 0x70:
+	    { 
+	     PWM0_0_Update_Duty_Cycle (21875);
 		   break;
 	    }
 	
-	   //BTN2 (PA4)
-	    case 0x10:
+	    
+			//IR1 (PA2) + IR2 (PA3) + IR3 (PA4) seeing black 
+			// increase right side by % 
+	    case 0x60:
 	    {
+	     PWM0_0_Update_Duty_Cycle (47187);
+		   break;
+	    }
+	
+	   	//IR1 (PA2) + IR2 (PA3) + IR3 (PA4) + IR4 (PA5) seeing black 
+			// increase right side by % 
+	    case 0x40:
+	    {
+			PWM0_0_Update_Duty_Cycle (7187);
 			break;
 	    }
 	
-	    //BTN3 (PA5)
+	   //IR1 (PA2) + IR2 (PA3) + IR3 (PA4) + IR4 (PA5) seeing black 
+		 //increase right side by % 
 	    case 0x20:
 	    {
-	
+				PWM0_0_Update_Duty_Cycle (17187);
+	    	break;
+	    }
+			
+			 //IR5 (PA6) increase left side by 10%
+	    case 0x42:
+	    {
+				PWM0_0_Update_Duty_Cycle (57187);
 	    	break;
 	    }
 	
@@ -117,10 +159,10 @@ void PMOD_BTN_Handler (uint8_t pmod_btn_status)
 	{
 	break;
 	}
-}
-
+ }
 }	
-*/
+
+
 
 void Timer_0A_periodic_Task (void)
 {
@@ -128,6 +170,10 @@ void Timer_0A_periodic_Task (void)
 	
   if ((Timer_0A_ms_elapsed %5 ) ==0)
   {
+		
+		IR_Sensor_Handler (increment_duty_cycle);
   }
 }
+
+
 

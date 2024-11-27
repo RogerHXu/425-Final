@@ -6,16 +6,16 @@
  * This file contains the function definitions for the Timer_0A_Interrupt driver.
  * It uses the Timer 0A module to generate periodic interrupts.
  *
- * @note Timer 0A has been configured to generate periodic interrupts every 1 ms
- * for the Timers lab.
- *
+ * @note Timer 0A has been configured to generate periodic interrupts every 1us and count 1 ms
+ * to improve timing on the sensor calculations
+ * 
  * @note This driver assumes that the system clock's frequency is 50 MHz.
  * 
  * @note Refer to Table 2-9 (Interrupts) on pages 104 - 106 from the TM4C123G Microcontroller Datasheet
  * to view the Vector Number, Interrupt Request (IRQ) Number, and the Vector Address
  * for each peripheral.
  *
- * @author Aaron Nanas
+ * @author Lenny Marron
  */
 
 #include "Timer_0A_Interrupt.h"
@@ -37,7 +37,7 @@ void Timer_0A_Interrupt_Init(void(*task)(void))
 	TIMER0->CTL &= ~0x01;
 	
 	// Set the bits of the GPTMCFG field (Bits 2 to 0) in the GPTMCFG register
-	// 0x4 = Select the 16-bit timer configuration
+	// 0x4 = Select the 16-bit timer configuration (max count 65,535)
 	TIMER0->CFG |= 0x04;
 	
 	// Set the bits of the TAMR field (Bits 1 to 0) in the GPTMTAMR register
@@ -51,13 +51,21 @@ void Timer_0A_Interrupt_Init(void(*task)(void))
 	// Set the prescale value to 50 by setting the bits of the
 	// TAPSR field (Bits 7 to 0) in the GPTMTAPR register
 	// New timer clock frequency = (50 MHz / 50) = 1 MHz
-	TIMER0->TAPR = 50;
+	//TIMER0->TAPR = 50;
+	
+	// LM Changed 
+	// Timer clock frequency = (50 MHz / 5) = 10 MHz
+	// This allows us to be more precise with our measurements aka 0.1 us
+	TIMER0->TAPR = 5;
 	
 	// Set the timer interval load value by writing to the
 	// TAILR field (Bits 31 to 0) in the GPTMTAILR register
 	// (1 us * 1000) = 1 ms
-	// Timer 0A Resolution: 1 ms
-	TIMER0->TAILR = (1000 - 1);
+	//	TIMER0->TAILR = (1000 - 1);
+	
+	// LM Changed (0.1 us * 10) = 1 us
+	// Timer 0A Resolution: 1 us
+	TIMER0->TAILR = (10 - 1);
 	
 	// Set the TATOCINT bit (Bit 0) to 1 in the GPTMICR register
 	// The TATOCINT bit will be automatically cleared when it is set to 1
@@ -73,6 +81,7 @@ void Timer_0A_Interrupt_Init(void(*task)(void))
 	// Timer 0A has an IRQ of 19
 	NVIC->IPR[4] = (NVIC->IPR[4] & 0x00FFFFFF) | (1 << 29);
 	
+	// Interrupt Set Enable 0 register
 	// Enable IRQ 19 for Timer 0A by setting Bit 19 in the ISER[0] register
 	NVIC->ISER[0] |= (1 << 19);
 	

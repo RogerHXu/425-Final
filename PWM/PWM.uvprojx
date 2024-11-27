@@ -405,11 +405,6 @@
               <FilePath>.\SysTick_Delay.c</FilePath>
             </File>
             <File>
-              <FileName>Buzzer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Buzzer.c</FilePath>
-            </File>
-            <File>
               <FileName>Timer_0A_Interrupt.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Timer_0A_Interrupt.c</FilePath>
@@ -423,11 +418,6 @@
               <FileName>EduBase_Button_Interrupt.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EduBase_Button_Interrupt.c</FilePath>
-            </File>
-            <File>
-              <FileName>PMOD_BTN_Interrupt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\PMOD_BTN_Interrupt.c</FilePath>
             </File>
             <File>
               <FileName>PWM_Clock.c</FileName>
@@ -449,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>.\PWM0_1.c</FilePath>
             </File>
+            <File>
+              <FileName>IR_Tracking_Sensor_Interrupt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\IR_Tracking_Sensor_Interrupt.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -465,11 +460,6 @@
               <FilePath>.\SysTick_Delay.h</FilePath>
             </File>
             <File>
-              <FileName>Buzzer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Buzzer.h</FilePath>
-            </File>
-            <File>
               <FileName>Timer_0A_Interrupt.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Timer_0A_Interrupt.h</FilePath>
@@ -483,11 +473,6 @@
               <FileName>EduBase_Button_Interrupt.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\EduBase_Button_Interrupt.h</FilePath>
-            </File>
-            <File>
-              <FileName>PMOD_BTN_Interrupt.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\PMOD_BTN_Interrupt.h</FilePath>
             </File>
             <File>
               <FileName>PWM_Clock.h</FileName>
@@ -508,6 +493,11 @@
               <FileName>PWM0_1.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\PWM0_1.h</FilePath>
+            </File>
+            <File>
+              <FileName>IR_Tracking_Sensor_Interrupt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\IR_Tracking_Sensor_Interrupt.h</FilePath>
             </File>
           </Files>
         </Group>
