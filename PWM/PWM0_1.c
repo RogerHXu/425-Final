@@ -20,9 +20,9 @@ void PWM0_1_Init(uint16_t period_constant, uint16_t duty_cycle)
 {	
 	if (duty_cycle >= period_constant) return;
 	
-	//Enable the clock to PWM Module 0 (Bit 1) in the RCGCPWM
+	//Enable the clock to PWM Module 0 (Bit 0) in the RCGCPWM
 	SYSCTL -> RCGCPWM |= 0x01; 
-	//Enable the clock to GPIO Port B  (Bit 2) in the RCGCGPIO
+	//Enable the clock to GPIO Port B  (Bit 1) in the RCGCGPIO
 	SYSCTL -> RCGCGPIO |= 0x02;
 	
 	//Configure the PB4 pin (M1PWM6) by setting Bit 4
