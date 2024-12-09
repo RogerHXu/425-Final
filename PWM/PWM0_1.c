@@ -25,15 +25,15 @@ void PWM0_1_Init(uint16_t period_constant, uint16_t duty_cycle)
 	//Enable the clock to GPIO Port B  (Bit 1) in the RCGCGPIO
 	SYSCTL -> RCGCGPIO |= 0x02;
 	
-	//Configure the PB4 pin (M1PWM6) by setting Bit 4
-  GPIOB-> AFSEL |= 0x10;
+	//Configure the PB7 pin (M1PWM6) by setting Bit 4
+  GPIOB-> AFSEL |= 0x80;
 	//Clear the PMC2 field (Bits 19 to 16) in the PCTL register for Port B.
- 	GPIOB -> PCTL &=~ 0x000F0000;
-	//Configure the PB4 pin writing 0x4 (Bits 19 to 16) in the PCTL register.
-	GPIOB -> PCTL |= 0x00040000;
+ 	GPIOB -> PCTL &=~ 0xF0000000;
+	//Configure the PB7 pin writing 0x4 (Bits 31 to 28) in the PCTL register.
+	GPIOB -> PCTL |= 0x40000000;
 	
 	//Digital Enabled for the PB4 (Bit 4) in the DEN register
-	GPIOB -> DEN |= 0x10;
+	GPIOB -> DEN |= 0x80;
 	//Disable the Module 0 PWM 1 Generator block (PWM0_1) before configuration by clearing the ENABLE bit (Bit 0) in the PWM3CTL register.
 	PWM0 -> _1_CTL &=~ 0x01;
 	

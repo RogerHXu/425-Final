@@ -23,50 +23,65 @@ void PWM1_1_Init(uint16_t period_constant, uint16_t duty_cycle)
 	
 	if (duty_cycle >= period_constant) return;
 	
-	//clocks PWM Module 1 (Bit 1)
-	SYSCTL -> RCGCPWM |= 0x02;
+	//Enable the clock to PWM Module 1 (Bit 2) in the RCGCPWM
+	SYSCTL -> RCGCPWM |= 0x02; 
 	
-	//Clocks GPIO Port A (Bit 0)
-	SYSCTL -> RCGCGPIO |= 0x01;
+	//Enable the clock to GPIO Port D  (Bit 3) in the RCGCGPIO
+	SYSCTL -> RCGCGPIO |= 0x04;
 	
-	//Sets PA7 Alt Function  (bit 7)
-	GPIOA-> AFSEL |= 0x80;
+	//Configure the PD1 pin (M1PWM6) by setting (Bit 0)
+  GPIOD-> AFSEL |= 0x02;
 	
-	//Clears (Bits 31-28)  in PMC reg Port A
-	GPIOA -> PCTL &= ~ 0xF0000000;
+	//Clear the PMC2 field (Bits 4 to 7) for Mux0 based on PD0 in the PCTL register.
+ 	GPIOD -> PCTL &=~ 0x000000F0;
 	
-	//Sets Pin Assignment in (Bits 31-28)  in PMC reg
-	GPIOA -> PCTL |= 0x50000000;
+	//Configure the PD1 pin writing 0x5 ( in the PCTL register. 5 is from the AF coding.
+	GPIOD -> PCTL |= 0x00000050;
 	
-	//Set Pin 7 as digital enabled
-  GPIOA -> DEN |= 0x80;
-
-  //Clears ENABLE bit (Bit 0) from Gen Block 1
-	PWM1-> _1_CTL &= ~ 0x01;
 	
-  //Clear MODE bit (Bit 1) from Gen Block 1
-	PWM1-> _1_CTL &= ~ 0x02;
+	//Digital Enabled for the PD1 (Bit 1) in the DEN register
+	GPIOD -> DEN |= 0x02;
 	
-	PWM1-> _1_CTL &= ~ 0x02;
+	//Disable the Module 1 PWM 0 Generator block (PWM0_3) before 
+	//configuration by clearing the ENABLE bit (Bit 0) in the PWM3CTL register.
+	PWM1 -> _0_CTL &=~ 0x01;
 	
-	// Sets ACTCMPAD (Bit 7 & 6) high to drive PWM High when Count matches CompA
-	PWM1-> _1_GENA |= 0xC0;
+	//Configure the counter for the PWM0_3 block to use Count-Down mode by clearing
+  //the MODE bit (Bit 1) in the PWM3CTL register. The counter will count from the load
+  //value to 0, and then wrap back to the load value.
+	PWM1 -> _0_CTL &=~ 0x02;
 	
-	//Sets ACTLOAD (Bit 3 & 2) as 10 to drive PWM LOW when Count = LOAD
-	PWM1-> _1_GENA |= 0x08;
 	
-	// Sets PWM LOAD as a variable to be adjusted by the period max vale of 65,535
-	PWM1-> _1_LOAD = (period_constant -1) ;
+	//Set the ACTCMPAD field (Bits 7 to 6) to 0x3 in the PWM3GENA register to drive the
+  //PWM signal high when the counter matches the comparator (i.e. the value in the
+  //PWM3CMPA register) while it is counting down.
+	PWM1 -> _0_GENA |= 0xC0;
 	
-	//Sets PWM COMPARATOR A
-	PWM1-> _1_CMPA = (duty_cycle-1);
 	
-	//Enables PWM (bit 0) from Gen Block
-	PWM1-> _1_CTL |=  0x01;
+	//Set the ACTLOAD field (Bits 3 to 2) to 0x2 in the PWM3GENA register to drive the
+  //PWM signal low when the counter matches the value in the PWM3LOAD register. 
+	PWM1 -> _0_GENA |= 0x08;
 	
-	// PWM signal to Pin PA7 M1 PWM3 Gen1  (bit 3)
-	PWM1-> ENABLE |=  0x08;
-
+	//Set the period of the PWM signal by writing to the LOAD field (Bits 15 to 0) in the
+  //PWM3LOAD register. This determines the number of clock cycles needed to count
+  //down to zero.
+	PWM1 -> _0_LOAD = (period_constant - 1);
+	
+	
+	//Set the duty cycle of the PWM signal by writing to the COMPA field (Bits 15 to 0) in
+  //the PWM3CMPA register. When the counter matches the value in this register, the
+  //PWM signal will be driven high. 
+	PWM1 -> _0_CMPA = (duty_cycle-1);
+	
+	
+	//Enable the PWM1_3 block after configuration by setting the ENABLE bit (Bit 0) in
+  //the PWM3CTL register. 
+	PWM1 -> _0_CTL |= 0x01;
+	
+	// Enable the PWM1_3 signal to be passed to the PD0 pin (M0PWM6) 
+	//by setting the PWM6EN bit (Bit 6) in the PWMENABLE register. 
+	PWM1 -> ENABLE |= 0x04;
+	
 }
 
 void PWM1_1_Update_Duty_Cycle(uint16_t duty_cycle)

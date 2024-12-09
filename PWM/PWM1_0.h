@@ -17,9 +17,9 @@
 #include "TM4C123GH6PM.h"
 
 /**
- * @brief Initializes the PWM Module 0 Generator  with the specified period and duty cycle.
+ * @brief Initializes the PWM Module 1 Generator  with the specified period and duty cycle.
  *
- * This function initializes the PWM Module 0 Generator 3 with the given period constant and duty cycle.
+ * This function initializes the PWM Module 1 Generator 0 with the given period constant and duty cycle.
  * It configures the PD0 pin to operate as a Module 0 PWM6 pin (M0PWM6) to output the PWM signal.
  * period_constant determines the PWM signal's frequency. The specified duty_cycle value must be less 
  * than the period_constant.
@@ -32,7 +32,7 @@
  *
  * @return None
  */
-void PWM0_3_Init(uint16_t period_constant, uint16_t duty_cycle);
+void PWM1_0_Init(uint16_t period_constant, uint16_t duty_cycle);
 
 /**
  * @brief Updates the PWM Module 0 Generator 3 duty cycle for the PWM signal on the PD0 pin (M0PWM6).
@@ -41,4 +41,4 @@ void PWM0_3_Init(uint16_t period_constant, uint16_t duty_cycle);
  *
  * @return None
  */
-void PWM0_3_Update_Duty_Cycle(uint16_t duty_cycle);
+void PWM1_0_Update_Duty_Cycle(uint16_t duty_cycle);

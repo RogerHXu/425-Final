@@ -11,7 +11,8 @@
  *	- DRV8833 DC Motor Driver
  *	-	Two DC Motors Gearboxes 
  *				- Left motor controlled  PB6 (PWM0_0) PB7 (PWM0_1)
- *				- Right motor controlled PD0 (PWM0_3) PD1 (PWM1_3)
+					
+ *				- Right motor controlled PD0 (PWM1_0) PD1 (PWM1_1)
  *				
  *			
  * For PC communication using:
@@ -37,7 +38,8 @@
 #include "PWM_Clock.h"
 #include "PWM0_0.h"
 #include "PWM0_1.h"
-#include "PWM1_3.h"
+#include "PWM1_0.h"
+#include "PWM1_1.h"
 #include "UART0.h"
 #include "UART1.h"
  
@@ -49,10 +51,12 @@
 
 void Timer_0A_Periodic_Task (void);
 extern void IR_Sensor_Handler (uint8_t ir_sensor_status);
+extern void US_Sensor_Handler (uint16_t distance_value);
 static uint32_t Timer_0A_ms_elapsed= 0;
-//static uint16_t RGB_LED_duty_cycle = 0;
 static uint8_t increment_duty_cycle = 1;
 
+//0 is IR, 1 is Ultrasonic
+static uint8_t mode = 0;
 
 
 int main(void)
@@ -70,8 +74,14 @@ int main(void)
 		// Period_Constant = 62500    Duty Cycle = (62500 * 5%)= 3125 
   PWM0_0_Init(62500,3125);
 	
+	// Period_Constant = 62500    Duty Cycle = (62500 * 5%)= 3125 
+	PWM1_0_Init(62500,3125);
 	
-	IR_Sensor_Interrupt_Init(&IR_Sensor_Handler);
+		// Period_Constant = 62500    Duty Cycle = (62500 * 5%)= 3125 
+  PWM1_1_Init(62500,3125);
+	
+	//give system a delay for power to catch up
+	SysTick_Delay1ms(100);
 	
 		// Initialize an array to store the measured distance values from the US-100 Ultrasonic Distance Sensor
 	char US_100_UART_Buffer[BUFFER_SIZE] = {0};
@@ -84,43 +94,31 @@ int main(void)
 	
 	//Timer_0A_Interrupt_Init (&Timer_0A_Periodic_Task);
 	
+	mode = 0;
+	
 	while(1)
 	{						
+		//IR is in control
+		if(mode == 0){
+			IR_Sensor_Interrupt_Init(&IR_Sensor_Handler);
+		}
 		
-		UART1_Output_Character(READ_DISTANCE);
-		
-		US_100_UART_Buffer[0] = UART1_Input_Character();
-		US_100_UART_Buffer[1] = UART1_Input_Character();
-		
-		uint16_t distance_value = (US_100_UART_Buffer[1] | (US_100_UART_Buffer[0] << 8));
-		
-		UART0_Output_String("Distance (mm): ");
-		UART0_Output_Unsigned_Decimal(distance_value);
-		UART0_Output_Newline();
-		
+		//Ultrasonic is in control
+		else{
+			UART1_Output_Character(READ_DISTANCE);
+			
+			US_100_UART_Buffer[0] = UART1_Input_Character();
+			US_100_UART_Buffer[1] = UART1_Input_Character();
+			
+			uint16_t distance_value = (US_100_UART_Buffer[1] | (US_100_UART_Buffer[0] << 8));
+			
+			US_Sensor_Handler(distance_value);
+			
+		}
 		SysTick_Delay1ms(100);
 	}
 }
 		
-		/*
-		
-		//TT motor requires min 0.5V Equivalent PWM Voltage  to turn on
-		
-		//20% duty cycle
-PWM0_1_Update_Duty_Cycle (12500);
-		SysTick_Delay1ms (2000);
-		
-		//40% duty cycle
-PWM0_1_Update_Duty_Cycle (25000);
-		SysTick_Delay1ms (2000);
-	
-
-		//50% duty cycle
-PWM0_1_Update_Duty_Cycle (31250);
-		SysTick_Delay1ms (2000);
-		*/
-	
-
 
 // will decide where to shift the robot based off of IR input
 void IR_Sensor_Handler (uint8_t ir_sensor_status)
@@ -131,22 +129,22 @@ void IR_Sensor_Handler (uint8_t ir_sensor_status)
 	    case 0x00:
 	    { 
 	     PWM0_0_Update_Duty_Cycle (62500 * .2); //20%
-			 PWM0_1_Update_Duty_Cycle (62500 * .2);	//20%
+			 PWM1_0_Update_Duty_Cycle (62500 * .2);	//20%
 		   break;
 	    }
 			//Not Reading Black STOP both motors!!!!
 	    case 0x7C:
 	    { 
 	     PWM0_0_Update_Duty_Cycle (0);
-			 PWM0_1_Update_Duty_Cycle (0);	
+			 PWM1_0_Update_Duty_Cycle (0);	
 		   break;
 	    }
 			//IR1 (PA2) increase left side by %15 
 	    case 0x78:
 				
 	    { 
-	     PWM0_0_Update_Duty_Cycle (62500 * .35); //35%
-			 PWM0_1_Update_Duty_Cycle (62500 * .2);	//20%
+	     PWM1_0_Update_Duty_Cycle (62500 * .35); //35%
+			 PWM0_0_Update_Duty_Cycle (62500 * .2);	//20%
 		   break;
 	    }
 			
@@ -154,17 +152,18 @@ void IR_Sensor_Handler (uint8_t ir_sensor_status)
 			// increase right side by % 10
 	    case 0x70:
 	    { 
-	     PWM0_0_Update_Duty_Cycle (62500 * .3); //30%
-			 PWM0_1_Update_Duty_Cycle (62500 * .2); //20%
+	     PWM1_0_Update_Duty_Cycle (62500 * .3); //30%
+			 PWM0_0_Update_Duty_Cycle (62500 * .2); //20%
 		   break;
 	    }
 	
-	    
+			//are you trying to increase the degree turned?
+			
 			//IR1 (PA2) + IR2 (PA3) + IR3 (PA4) seeing black 
 			// increase right side by % 
 	    case 0x60:
 	    {
-	     PWM0_0_Update_Duty_Cycle (47187);
+	     PWM1_0_Update_Duty_Cycle (47187);
 		   break;
 	    }
 	
@@ -172,7 +171,7 @@ void IR_Sensor_Handler (uint8_t ir_sensor_status)
 			// increase right side by % 
 	    case 0x40:
 	    {
-			PWM0_0_Update_Duty_Cycle (7187);
+			PWM1_0_Update_Duty_Cycle (7187);
 			break;
 	    }
 	
@@ -180,7 +179,7 @@ void IR_Sensor_Handler (uint8_t ir_sensor_status)
 		 //increase right side by % 
 	    case 0x20:
 	    {
-				PWM0_0_Update_Duty_Cycle (17187);
+				PWM1_0_Update_Duty_Cycle (17187);
 	    	break;
 	    }
 			
@@ -196,6 +195,49 @@ void IR_Sensor_Handler (uint8_t ir_sensor_status)
 	break;
 	}
  }
+}
+
+// will decide where to turn the robot based off of Ultrasonic input
+void US_Sensor_Handler (uint16_t distance_value)
+{   
+		//stop
+		if(distance_value < 25){
+				PWM0_0_Update_Duty_Cycle (0);
+				PWM0_1_Update_Duty_Cycle (0);	
+				PWM1_0_Update_Duty_Cycle (0);
+				PWM1_1_Update_Duty_Cycle (0);	
+				
+			//check left
+			if(distance_value < 25){
+				PWM0_0_Update_Duty_Cycle (0);
+				PWM0_1_Update_Duty_Cycle (0);	
+				PWM1_0_Update_Duty_Cycle (62500 * .50); //35%
+				PWM1_1_Update_Duty_Cycle (0);	//0%
+			}
+			//check right
+			else{
+				if(distance_value > 25){
+					PWM0_0_Update_Duty_Cycle (62500 * .50);
+					PWM0_1_Update_Duty_Cycle (0);	
+					PWM1_0_Update_Duty_Cycle (0); 
+					PWM1_1_Update_Duty_Cycle (0);	//0%
+				}
+				//turn 360 degrees
+				else{
+					PWM0_0_Update_Duty_Cycle (62500 * .75); 
+					PWM0_1_Update_Duty_Cycle (0);
+					PWM1_0_Update_Duty_Cycle (0); 
+					PWM1_1_Update_Duty_Cycle (0);
+				}
+			}
+    }
+		//keep going forward
+		else{
+			PWM0_0_Update_Duty_Cycle (62500 * .2); //20%
+			PWM0_1_Update_Duty_Cycle (0);
+			PWM1_0_Update_Duty_Cycle (62500 * .2);	//20%			
+			PWM1_1_Update_Duty_Cycle (0);
+		}
 }
 
 

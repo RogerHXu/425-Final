@@ -133,7 +133,7 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>1</Capability>
+            <Capability>0</Capability>
             <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
@@ -430,14 +430,14 @@
               <FilePath>.\PWM0_1.c</FilePath>
             </File>
             <File>
-              <FileName>PWM0_3.c</FileName>
+              <FileName>PWM1_0.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\PWM0_3.c</FilePath>
+              <FilePath>.\PWM1_0.c</FilePath>
             </File>
             <File>
-              <FileName>PWM1_3.c</FileName>
+              <FileName>PWM1_1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\PWM1_3.c</FilePath>
+              <FilePath>.\PWM1_1.c</FilePath>
             </File>
             <File>
               <FileName>IR_Tracking_Sensor_Interrupt.c</FileName>
@@ -490,14 +490,19 @@
               <FilePath>.\PWM0_0.h</FilePath>
             </File>
             <File>
-              <FileName>PWM1_3.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\PWM1_3.h</FilePath>
-            </File>
-            <File>
               <FileName>PWM0_1.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\PWM0_1.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM1_0.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PWM1_0.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM1_1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PWM1_1.h</FilePath>
             </File>
             <File>
               <FileName>IR_Tracking_Sensor_Interrupt.h</FileName>
@@ -513,11 +518,6 @@
               <FileName>UART1.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\UART1.h</FilePath>
-            </File>
-            <File>
-              <FileName>PWM0_3.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\PWM0_3.h</FilePath>
             </File>
           </Files>
         </Group>
