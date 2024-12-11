@@ -58,5 +58,5 @@ void PWM0_0_Init(uint16_t period_constant, uint16_t duty_cycle)
 
 void PWM0_0_Update_Duty_Cycle(uint16_t duty_cycle)
 {
-PWM0-> _0_CMPA = (duty_cycle - 1);
+PWM0-> _0_CMPA = (duty_cycle -1);
 }

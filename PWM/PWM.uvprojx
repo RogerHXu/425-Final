@@ -430,9 +430,9 @@
               <FilePath>.\PWM0_1.c</FilePath>
             </File>
             <File>
-              <FileName>PWM0_3.c</FileName>
+              <FileName>PWM1_1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\PWM0_3.c</FilePath>
+              <FilePath>.\PWM1_1.c</FilePath>
             </File>
             <File>
               <FileName>PWM1_3.c</FileName>
@@ -453,6 +453,11 @@
               <FileName>UART1.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\UART1.c</FilePath>
+            </File>
+            <File>
+              <FileName>Motor_CTL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Motor_CTL.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -500,6 +505,11 @@
               <FilePath>.\PWM0_1.h</FilePath>
             </File>
             <File>
+              <FileName>PWM1_1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PWM1_1.h</FilePath>
+            </File>
+            <File>
               <FileName>IR_Tracking_Sensor_Interrupt.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\IR_Tracking_Sensor_Interrupt.h</FilePath>
@@ -515,9 +525,9 @@
               <FilePath>.\UART1.h</FilePath>
             </File>
             <File>
-              <FileName>PWM0_3.h</FileName>
+              <FileName>Motor_CTL.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\PWM0_3.h</FilePath>
+              <FilePath>.\Motor_CTL.h</FilePath>
             </File>
           </Files>
         </Group>

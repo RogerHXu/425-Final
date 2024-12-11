@@ -6,7 +6,7 @@
  * @brief Source file for the PWM1_1 driver.
  *
  * This file contains the function definitions for the PWM1_1 driver.
- * It uses the Module 1 PWM Generator 1 to generate a PWM signal with the PA7 pin.
+ * It uses the Module 1 PWM Generator 1 to generate a PWM signal with the PA6 & PA7 pin.
  *
  * @note This driver assumes that the system clock's frequency is 50 MHz.
  *
@@ -30,23 +30,21 @@ void PWM1_1_Init(uint16_t period_constant, uint16_t duty_cycle)
 	SYSCTL -> RCGCGPIO |= 0x01;
 	
 	//Sets PA7 Alt Function  (bit 7)
-	GPIOA-> AFSEL |= 0x80;
+	GPIOA-> AFSEL |= 0xC0;
 	
 	//Clears (Bits 31-28)  in PMC reg Port A
-	GPIOA -> PCTL &= ~ 0xF0000000;
+	GPIOA -> PCTL &= ~ 0xFF000000;
 	
 	//Sets Pin Assignment in (Bits 31-28)  in PMC reg
-	GPIOA -> PCTL |= 0x50000000;
+	GPIOA -> PCTL |= 0x55000000;
 	
 	//Set Pin 7 as digital enabled
-  GPIOA -> DEN |= 0x80;
+  GPIOA -> DEN |= 0xC0;
 
   //Clears ENABLE bit (Bit 0) from Gen Block 1
 	PWM1-> _1_CTL &= ~ 0x01;
 	
   //Clear MODE bit (Bit 1) from Gen Block 1
-	PWM1-> _1_CTL &= ~ 0x02;
-	
 	PWM1-> _1_CTL &= ~ 0x02;
 	
 	// Sets ACTCMPAD (Bit 7 & 6) high to drive PWM High when Count matches CompA
@@ -65,7 +63,8 @@ void PWM1_1_Init(uint16_t period_constant, uint16_t duty_cycle)
 	PWM1-> _1_CTL |=  0x01;
 	
 	// PWM signal to Pin PA7 M1 PWM3 Gen1  (bit 3)
-	PWM1-> ENABLE |=  0x08;
+	// Pin PA6 M1 PWM2 Gen1  (bit 2)
+	PWM1-> ENABLE |=  0x0C;
 
 }
 

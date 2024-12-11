@@ -66,22 +66,22 @@ void EduBase_LEDs_Init(void)
 	SYSCTL->RCGCGPIO |= 0x02;
 	
 	// Set PB0, PB1, PB2, and PB3 as output GPIO pins
-	GPIOB->DIR |= 0x0F;
+	GPIOB->DIR |= 0x0C;
 	
 	// Configure PB0, PB1, PB2, and PB3 to function as GPIO pins
-	GPIOB->AFSEL &= ~0x0F;
+	GPIOB->AFSEL &= ~0x0C;
 	
 	// Enable digital functionality for PB0, PB1, PB2, and PB3
-	GPIOB->DEN |= 0x0F;
+	GPIOB->DEN |= 0x0C;
 	
 	// Initialize the output of the EduBase LEDs to zero
-	GPIOB->DATA &= ~0x0F;
+	GPIOB->DATA &= ~0x0C;
 }
 
 void EduBase_LEDs_Output(uint8_t led_value)
 {
 	// Set the output of the LEDs
-	GPIOB->DATA = (GPIOB->DATA & 0xF0) | led_value;
+	GPIOB->DATA = (GPIOB->DATA & 0xF3) | led_value;
 }
 
 void EduBase_Button_Init(void)
