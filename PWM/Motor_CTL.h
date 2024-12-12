@@ -18,10 +18,10 @@
  */
  
 #include "TM4C123GH6PM.h"
-#include "PWM0_0.h"
 #include "PWM_Clock.h"
+#include "PWM0_0.h"
 #include "PWM0_1.h"
-#include "PWM0_3.h"
+#include "PWM1_1.h"
 #include "PWM1_3.h"
 
 

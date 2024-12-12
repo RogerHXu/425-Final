@@ -410,11 +410,6 @@
               <FilePath>.\Timer_0A_Interrupt.c</FilePath>
             </File>
             <File>
-              <FileName>EduBase_Button_Interrupt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EduBase_Button_Interrupt.c</FilePath>
-            </File>
-            <File>
               <FileName>PWM_Clock.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\PWM_Clock.c</FilePath>
@@ -478,11 +473,6 @@
               <FileName>Timer_0A_Interrupt.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Timer_0A_Interrupt.h</FilePath>
-            </File>
-            <File>
-              <FileName>EduBase_Button_Interrupt.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\EduBase_Button_Interrupt.h</FilePath>
             </File>
             <File>
               <FileName>PWM_Clock.h</FileName>

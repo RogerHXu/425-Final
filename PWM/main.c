@@ -50,8 +50,8 @@
 #define BUFFER_SIZE   64
 #define READ_DISTANCE 0x55
 
-void Timer_0A_Periodic_Task (void);
-extern void IR_Sensor_Handler (uint8_t ir_sensor_status);
+//void Timer_0A_Periodic_Task (void);
+void IR_Sensor_Handler (uint8_t ir_sensor_status); //extern
 static uint32_t Timer_0A_us_elapsed= 0;
 //static uint16_t RGB_LED_duty_cycle = 0;
 static uint8_t increment_duty_cycle = 1;
@@ -66,83 +66,17 @@ int Distance_cm (void)
 		US_100_UART_Buffer[0] = UART1_Input_Character();  //buffer aka read
 		US_100_UART_Buffer[1] = UART1_Input_Character();
 		
-		uint16_t distance_value = (US_100_UART_Buffer[1] | (US_100_UART_Buffer[0] << 8));
+		uint16_t distance_value = ((US_100_UART_Buffer[1] | (US_100_UART_Buffer[0] << 8))/10);
 		
 		UART0_Output_String("Distance (cm): ");
-		UART0_Output_Unsigned_Decimal(distance_value/10);
+		UART0_Output_Unsigned_Decimal(distance_value);
 		UART0_Output_Newline();
 		
 		SysTick_Delay1ms(100); 
-	return distance_value ;
+	return distance_value ; //confirmed to return cm in stead of mm
 }
 
-// will decide where to shift the robot based off of IR input
-void IR_Sensor_Handler (uint8_t ir_sensor_status)
-{   //62,500 = 100% duty
-  switch (ir_sensor_status)
-    { 
-			//Not Reading Black REverse motors!!!
-	    case 0x7C:
-	    { 
-	     PWM0_0_Update_Duty_Cycle (0);
-			 PWM1_3_Update_Duty_Cycle (25000);	
-		   break;
-	    }
-			//IR1 (PA2) increase left side by %15 
-	    case 0x78:
-	    { 
-	     PWM0_0_Update_Duty_Cycle (62500 * .35); //35%
-			 //PWM0_1_Update_Duty_Cycle (62500 * .2);	//20%
-		   break;
-	    }
-			
-			//IR1 (PA2) + IR2 (PA3) seeing black 
-			// increase right side by % 10
-	    case 0x70:
-	    { 
-	     PWM0_0_Update_Duty_Cycle (62500 * .3); //30%
-			 PWM0_1_Update_Duty_Cycle (62500 * .2); //20%
-		   break;
-	    }
-	
-	    
-			//IR1 (PA2) + IR2 (PA3) + IR3 (PA4) seeing black 
-			// increase right side by % 
-	    case 0x60:
-	    {
-	     PWM0_0_Update_Duty_Cycle (47187);
-		   break;
-	    }
-	
-	   	//IR1 (PA2) + IR2 (PA3) + IR3 (PA4) + IR4 (PA5) seeing black 
-			// increase right side by % 
-	    case 0x40:
-	    {
-			PWM0_0_Update_Duty_Cycle (7187);
-			break;
-	    }
-	
-	   //IR1 (PA2) + IR2 (PA3) + IR3 (PA4) + IR4 (PA5) seeing black 
-		 //increase right side by % 
-	    case 0x20:
-	    {
-				PWM0_0_Update_Duty_Cycle (17187);
-	    	break;
-	    }
-			
-			 //IR5 (PA6) increase left side by 10%
-	    case 0x42:
-	    {
-				PWM0_0_Update_Duty_Cycle (57187);
-	    	break;
-	    }
-	
-	default:
-	{
-	break;
-	}
- }
-}
+
 
 
 // Timer 0A Resolution: 1 us
@@ -180,13 +114,8 @@ int main(void)
 		// Period_Constant = 62500    Duty Cycle = (62500 * 5%)= 3125 
  // PWM1_3_Init(62500,0);  // PF2
 	
-	//IR_Sensor_Interrupt_Init(&IR_Sensor_Handler);
-	
-  //  EduBase_LEDs_Init ();
-
-	
-		// Initialize an array to store the measured distance values from the US-100 Ultrasonic Distance Sensor
-//	EduBase_LEDs_Output(0x04);
+	// Initialize the IR Channel Interrupts (Port A)
+	IR_Sensor_Interrupt_Init(&IR_Sensor_Handler);
 
 	// Initialize the UART0 module which will be used to print characters on the serial terminal
 	//UART0_Init();
@@ -200,6 +129,10 @@ int main(void)
 	{						
 		//Distance_cm(); // measure distance infront
 		
+		GPIOA_Handler ();
+		
+	
+		/*
 		SysTick_Delay1ms(200);
 	  PWM1_1_Update_Duty_Cycle (15000); //PA7 or PA6
 		PWM0_0_Update_Duty_Cycle (500);  //PB6
@@ -215,7 +148,8 @@ int main(void)
 		PWM0_1_Update_Duty_Cycle (50000); // needs to hold logic 1
 	  PWM1_3_Update_Duty_Cycle (100);	// needs to hold logic 1
 		
-		//IR_Sensor_Handler ();
+		/*
+		
 	//PWM0_1_Update_Duty_Cycle (500); // needs to hold logic 1
 	//PWM1_3_Update_Duty_Cycle (3500);	// needs to hold logic 1
 	
@@ -245,6 +179,76 @@ int main(void)
 		}
 	*/
 	}
+}
+
+// will decide where to shift the robot based off of IR input
+void IR_Sensor_Handler (uint8_t ir_sensor_status)
+{   //62,500 = 100% duty
+  switch (ir_sensor_status)
+    { 
+			//Not Reading Black REverse motors!!!
+	    case 0xBC:
+	    { 
+	   	PWM0_0_Update_Duty_Cycle (0); // needs to hold logic 1
+	    PWM1_3_Update_Duty_Cycle (0);	// needs to hold logic 1
+	
+	// Calculated value based on Sensor input
+	PWM0_1_Update_Duty_Cycle (62500 * .8); 
+	PWM1_1_Update_Duty_Cycle (62500 * .8); // 
+				
+				break;
+	    }
+			//IR1 (PA2) increase left side by %15 
+	    case 0x3C:
+	    { 
+	     PWM0_0_Update_Duty_Cycle (62500 * .8); //80%
+			 //PWM0_1_Update_Duty_Cycle (62500 * .2);	//20%
+			
+				PWM0_1_Update_Duty_Cycle (0); // needs to hold logic 0
+      	PWM1_1_Update_Duty_Cycle (0);	// needs to hold logic 0
+				
+		   break;
+	    }
+			//IR1 (PA2) + IR2 (PA3) + IR3 (PA4) + IR4 (PA5) seeing black 
+			// increase left side by % 10
+	    case 0x1C:
+	    {
+			PWM0_0_Update_Duty_Cycle (62500 * .6);
+				
+			PWM0_1_Update_Duty_Cycle (0); // needs to hold logic 0
+	    PWM1_1_Update_Duty_Cycle (0);	// needs to hold logic 0	
+				
+			break;
+	    }
+			//IR1 (PA2) + IR2 (PA3) seeing black 
+			// increase right side by % 10
+	    case 0xB0:
+	    { 
+	     //PWM0_0_Update_Duty_Cycle (62500 * .3); //30%
+			 PWM1_3_Update_Duty_Cycle (62500 * .6); //20%
+				
+				
+			PWM0_1_Update_Duty_Cycle (0); // needs to hold logic 0
+	    PWM1_1_Update_Duty_Cycle (0);	// needs to hold logic 0					
+		   break;
+	    }
+			//IR1 (PA2) + IR2 (PA3) + IR3 (PA4) seeing black 
+			// increase right side by % 15
+	    case 0xB8:
+	    {
+	     PWM1_3_Update_Duty_Cycle (62500 * .8);
+				
+
+			PWM0_1_Update_Duty_Cycle (0); // needs to hold logic 0
+	    PWM1_1_Update_Duty_Cycle (0);	// needs to hold logic 0					
+		   break;
+	    }
+	default:
+	{
+		// Do Nothing
+	break;
+	}
+ }
 }
 		
 
