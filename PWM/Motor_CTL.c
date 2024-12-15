@@ -5,11 +5,11 @@
  *
  * This file contains the function definitions for the DRV8833 driver.
  * PWM signals with a DRV8833 breackout board	& Two DC GearMotors 
- *				- Left motor controlled  PB6 (PWM0_0)FWD    PB7 (PWM0_1) REV
- *				- Right motor controlled PD0 (PWM0_3)FWD    PD1 (PWM1_3) REV
+ *				- Left motor controlled  PB6 (PWM0_0)FWD    PB4 (PWM0_1) REV
+ *				- Right motor controlled PF2 (PWM1_3)FWD    PA6 (PWM1_1) REV
  *
- * @note This driver assumes that the PWM_Clock_Init, PWM0_0, PWM0_1, PWM0_3, and PWM1_3 
- * functions has been called
+ * @note This driver assumes that the PWM_Clock_Init, PWM0_0_Init, PWM0_1_Init, PWM1_1_Init, and PWM1_3_Init 
+ * functions have been called
  * 
  *
  * @author Lenny Marron
@@ -21,40 +21,87 @@
 #include "PWM0_1.h"
 #include "PWM1_3.h"
 #include "PWM1_1.h"
+#include "SysTick_Delay.h" 
 
 
-void Move_FWD (int Speed)
+/**
+ * @brief  Adjusts PWM signals to allow FWD drive direction. 
+ *
+ * @param  PB6 (PWM0_0) PF2 pin (M1PWM6) are set to the minimum forward drive speed
+ *				 While PB4 (PWM0_1) and PA6 (PWM1_1) are set to logic level LOW.
+ *
+ * @return None
+ */
+void Move_FWD (float power)
 {
-	
-	// Left motor controlled  PB6 (PWM0_0)FWD    PB4 (PWM0_1) REV
-  // Right motor controlled PF2 (PWM1_3)FWD    PA6 (PWM1_1) REV
-	PWM0_1_Update_Duty_Cycle (0); // needs to hold logic 0
-	PWM1_1_Update_Duty_Cycle (0);	// needs to hold logic 0
-	
-	// Calculated value based on Sensor input
-	PWM0_0_Update_Duty_Cycle (500); 
-	PWM1_3_Update_Duty_Cycle (500); // 
+	BREAK ();	
+	PWM0_0_Update_Duty_Cycle ((62500 * power)+ 12000);//motor moves a bit slower than the other side
+	PWM1_3_Update_Duty_Cycle (62500 * power);  
+}
+
+/**
+ * @brief  Adjusts PWM signals to allow Right drive direction. 
+ *
+ * @param  Stops right motor and continues with Left Motor speed to turn right.
+ *				 PB6 (PWM0_0) is set to the minimum forward drive speed
+ *				 PF2 pin (M1PWM6) PB4 (PWM0_1) and PA6 (PWM1_1) are set to logic level LOW.
+ *
+ * @return None
+*/
+void Move_Right (float power)
+{
+	BREAK ();	
+	PWM0_0_Update_Duty_Cycle (62500 * power); 
+//	SysTick_Delay1ms (200);
+}
+
+/**
+ * @brief  Adjusts PWM signals to allow Left drive direction. 
+ *
+ * @param  Stops Left motor and continues with Right Motor speed to turn Left.
+ *				 PF2 pin (PWM1_3) is set to the minimum forward drive speed
+ *				 PB6 (PWM0_0)PB4 (PWM0_1) and PA6 (PWM1_1) are set to logic level LOW.
+ *
+ * @return None
+*/
+void Move_Left (float power)
+{
+	BREAK ();	
+	PWM1_3_Update_Duty_Cycle (62500 * power); 
+	//SysTick_Delay1ms (200);
 }
 
 
 
-void Move_REV (int Speed)
+/**
+ * @brief  Adjusts PWM signals to allow REV drive direction. 
+ *
+ * @param  PB4 (PWM0_1) and PA6 (PWM1_1) are set to the minimum forward drive speed
+ *				 While PB6 (PWM0_0) PF2 pin (M1PWM6) are set to logic level LOW.
+ *
+ * @return None
+ */
+void Move_REV (float power)
 {
-
-	PWM0_0_Update_Duty_Cycle (0); // needs to hold logic 1
-	PWM1_3_Update_Duty_Cycle (0);	// needs to hold logic 1
-	
-	// Calculated value based on Sensor input
-	PWM0_1_Update_Duty_Cycle (62500 * ( Speed *.1)); 
-	PWM1_1_Update_Duty_Cycle (62500 * ( Speed *.1)); // 
-	
+	BREAK ();	
+	PWM0_1_Update_Duty_Cycle (62500 * power); 
+	PWM1_1_Update_Duty_Cycle (62500 * power); // 
+  //SysTick_Delay1ms (20);
 }
 
+
+/**
+ * @brief  Adjusts PWM signals to allow motors to stop. 
+ *
+ * @param  All PWM signals are set to are set to logic level LOW.
+ *					 PB4 (PWM0_1)  PA6 (PWM1_1) PB6 (PWM0_0) PF2 pin (M1PWM6) 
+ *
+ * @return None
+ */
 void BREAK (void)
 {
-
-	PWM0_0_Update_Duty_Cycle (0); // needs to hold logic 0
-	PWM0_1_Update_Duty_Cycle (0);	// needs to hold logic 0
-	PWM1_1_Update_Duty_Cycle (0); // needs to hold logic 0
-	PWM1_3_Update_Duty_Cycle (0); // needs to hold logic 0
+	PWM0_0_Update_Duty_Cycle (0); 
+	PWM0_1_Update_Duty_Cycle (0);	
+	PWM1_1_Update_Duty_Cycle (0); 
+	PWM1_3_Update_Duty_Cycle (0); 
 }

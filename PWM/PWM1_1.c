@@ -1,12 +1,11 @@
 /**
  * @file PWM1_1.c
  *
- * completed 11/17/24
  *
  * @brief Source file for the PWM1_1 driver.
  *
  * This file contains the function definitions for the PWM1_1 driver.
- * It uses the Module 1 PWM Generator 1 to generate a PWM signal with the PA6 & PA7 pin.
+ * It uses the Module 1 PWM Generator 1 to generate a PWM signal with the PA6 pin.
  *
  * @note This driver assumes that the system clock's frequency is 50 MHz.
  *

@@ -1,6 +1,5 @@
 --cpu=Cortex-M4.fp.sp
 ".\objects\main.o"
-".\objects\gpio.o"
 ".\objects\systick_delay.o"
 ".\objects\timer_0a_interrupt.o"
 ".\objects\pwm_clock.o"
