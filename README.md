@@ -1,21 +1,12 @@
-<img src="media/image3.png" style="width:4.87798in;height:0.79156in"
-alt="A picture containing graphical user interface Description automatically generated" />
+ECE 425 - Microprocessor Systems, Fall 2024
 
-ECE 425
-
-Microprocessor Systems
-
-Final Project
-
-Pathfinder Robot
+Final Project: Pathfinder Robot
 
 Lenny Marron
-
 Roger Xu
 
 Instructor: Aaron Nanas
 
-Fall 2024
 
 ## **<u>Introduction:</u>**
 
