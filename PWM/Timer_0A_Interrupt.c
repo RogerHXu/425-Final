@@ -52,20 +52,14 @@ void Timer_0A_Interrupt_Init(void(*task)(void))
 	// TAPSR field (Bits 7 to 0) in the GPTMTAPR register
 	// New timer clock frequency = (50 MHz / 50) = 1 MHz
 	//TIMER0->TAPR = 50;
-	
-	// LM Changed 
-	// Timer clock frequency = (50 MHz / 5) = 10 MHz
-	// This allows us to be more precise with our measurements aka 0.1 us
-	TIMER0->TAPR = 5;
+	TIMER0->TAPR = 50;
 	
 	// Set the timer interval load value by writing to the
 	// TAILR field (Bits 31 to 0) in the GPTMTAILR register
 	// (1 us * 1000) = 1 ms
 	//	TIMER0->TAILR = (1000 - 1);
 	
-	// LM Changed (0.1 us * 10) = 1 us
-	// Timer 0A Resolution: 1 us
-	TIMER0->TAILR = (10 - 1);
+	TIMER0->TAILR = (1000 - 1);
 	
 	// Set the TATOCINT bit (Bit 0) to 1 in the GPTMICR register
 	// The TATOCINT bit will be automatically cleared when it is set to 1
@@ -79,9 +73,10 @@ void Timer_0A_Interrupt_Init(void(*task)(void))
 	// In the Interrupt 16-19 Priority (PRI4) register,
 	// the INTD field (Bits 31 to 29) corresponds to Interrupt Request (IRQ) 19
 	// Timer 0A has an IRQ of 19
-	NVIC->IPR[4] = (NVIC->IPR[4] & 0x00FFFFFF) | (1 << 29);
+	NVIC->IPR[4] = (NVIC->IPR[4] & 0x00FFFFFF) | (0 << 29);
 	
 	// Interrupt Set Enable 0 register
+	// Table 2-9 lists GPIO Port D as Interrupt Request Reg
 	// Enable IRQ 19 for Timer 0A by setting Bit 19 in the ISER[0] register
 	NVIC->ISER[0] |= (1 << 19);
 	
