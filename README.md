@@ -38,7 +38,7 @@ and right. We based our motor control using logic in **Table 1** below.
 
 **<u>Table 1 Motor Control Logic</u>**
 
-<img src="media/image4.png" style="width:5.32435in;height:1.21868in" />
+![](https://github.com/RogerHXu/425-Final/blob/main/images/pwm.png)
 
 By using the DRV8833, it provided the ability to control 2 DC motors
 with +3.3V input logic and a small footprint. The speed of the motors
@@ -60,23 +60,23 @@ the location of the US-100 sensor the same the entire time.
 
 ### **<u>CAD model of 3d Printed Parts</u>**
 
-<img src="media/image1.png" style="width:3.65934in;height:2.97573in" /><img src="media/image7.png" style="width:3.09373in;height:2.83677in" />
+![cad](https://github.com/RogerHXu/425-Final/blob/main/images/cad.png)
 
 ## **<u>Block Diagram:</u>**
 
-<img src="media/image2.png" style="width:6.49886in;height:4.07646in" />
+![http://url/to/img.png](https://github.com/RogerHXu/425-Final/blob/main/images/block.png)
 
 ## **<u>Table of Components:</u>**
 
 | **Part** | **QTY** | **Picture** |
 |----|----|----|
-| 5 Channel IR Tracking sensor module | 1 | <img src="media/image11.jpg" style="width:2.21684in;height:1.02873in" /> |
-| DC Geared Motors with wires | 1 | <img src="media/image12.jpg" style="width:2.42136in;height:1.90774in" /> |
-| Adafruit DRV8833 DC/Stepper Motor Driver Breakout Board | 1 | <img src="media/image10.png" style="width:1.3776in;height:1.06076in" /> |
-| EK-TM4C123GXL microcontroller | 1 | <img src="media/image8.png" style="width:2.49283in;height:1.66577in" /> |
-| US-100 Ultrasonic sensor | 1 | <img src="media/image13.jpg" style="width:2.22396in;height:1.2778in" /> |
-| +6V (AA) battery Pack | 1 | <img src="media/image6.png" style="width:1.72536in;height:1.66146in" /> |
-| +5V Coast Rechargeable Battery | 1 | <img src="media/image9.png" style="width:2.21508in;height:0.82172in" /> |
+| 5 Channel IR Tracking sensor module | 1 | ![](https://github.com/RogerHXu/425-Final/blob/main/images/IR.png) |
+| DC Geared Motors with wires | 1 | ![](https://github.com/RogerHXu/425-Final/blob/main/images/motor.png) |
+| Adafruit DRV8833 DC/Stepper Motor Driver Breakout Board | 1 | ![](https://github.com/RogerHXu/425-Final/blob/main/images/dc.png) |
+| EK-TM4C123GXL microcontroller | 1 | ![](https://github.com/RogerHXu/425-Final/blob/main/images/mcu.png) |
+| US-100 Ultrasonic sensor | 1 | ![](https://github.com/RogerHXu/425-Final/blob/main/images/us.png) |
+| +6V (AA) battery Pack | 1 | ![](https://github.com/RogerHXu/425-Final/blob/main/images/b_pack.png) |
+| +5V Coast Rechargeable Battery | 1 | ![](https://github.com/RogerHXu/425-Final/blob/main/images/5v.png) |
 
 ## 
 
@@ -158,7 +158,7 @@ Microcontroller</strong></th>
 
 ### **<u>Schematic:</u>**
 
-<img src="media/image5.png" style="width:7.80593in;height:5.08895in" />
+![()](https://github.com/RogerHXu/425-Final/blob/main/images/schem.png)
 
 ## **<u>Analysis and Results :</u>**
 
