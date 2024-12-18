@@ -2,7 +2,7 @@ ECE 425 - Microprocessor Systems, Fall 2024
 
 Final Project: Pathfinder Robot
 
-Lenny Marron
+Lenny Marron,
 Roger Xu
 
 Instructor: Aaron Nanas
